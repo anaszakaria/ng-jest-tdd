@@ -86,4 +86,21 @@ describe('SignUpComponent', () => {
       expect(button.disabled).toBeTruthy();
     })
   })
+
+  describe('Interactions', () => {
+    it('enables Submit button when password and password confirmation is equal', () => {
+      const signUp = fixture.nativeElement as HTMLElement;
+      const passwordInput = signUp.querySelector('input[id="password"]') as HTMLInputElement;
+      const passwordConfirmationInput = signUp.querySelector('input[id="passwordConfirmation"]') as HTMLInputElement;
+      passwordInput.value = 'P4ssword';
+      passwordInput.dispatchEvent(new Event('input'));
+      passwordConfirmationInput.value = 'P4ssword';
+      passwordConfirmationInput.dispatchEvent(new Event('input'));
+
+      fixture.detectChanges();
+
+      const button = signUp.querySelector('button') as HTMLButtonElement;
+      expect(button.disabled).toBeFalsy();
+    })
+  })
 });
