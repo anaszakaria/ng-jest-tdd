@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/angular";
 import { SignUpComponent } from "./sign-up.component";
+import userEvent from "@testing-library/user-event";
 
 describe('SignUpComponent', () => {
     describe('Layout', () => {
@@ -51,6 +52,18 @@ describe('SignUpComponent', () => {
             await render(SignUpComponent);
             const signUpBtn = screen.getByRole('button', { name: 'Sign Up' });
             expect(signUpBtn).toBeDisabled();
+        })
+    })
+
+    describe('Interactions', () => {
+        it('enables Submit button when password and password confirmation is equal', async () => {
+            await render(SignUpComponent);
+            const passwordInput = screen.getByLabelText('Password');
+            const passwordConfirmationInput = screen.getByLabelText('Confirm Password');
+            await userEvent.type(passwordInput, 'P4ssword');
+            await userEvent.type(passwordConfirmationInput, 'P4ssword');
+            const signUpBtn = screen.getByRole('button', { name: 'Sign Up' });
+            expect(signUpBtn).toBeEnabled();
         })
     })
 })
