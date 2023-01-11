@@ -6,12 +6,19 @@ import { setupServer } from 'msw/node'
 import { HttpClientModule } from '@angular/common/http';
 
 let requestBody: any;
+let counter = 0;
+
 const server = setupServer(
     rest.post('/api/1.0/users', (req, res, ctx) => {
         requestBody = req.body;
+        counter += 1;
         return res(ctx.status(200), ctx.json({}))
     })
 );
+
+beforeEach(() => {
+    counter = 0;
+})
 
 beforeAll(() => {
     server.listen();
@@ -79,19 +86,10 @@ describe('SignUpComponent', () => {
     })
 
     describe('Interactions', () => {
-        it('enables Submit button when password and password confirmation is equal', async () => {
-            await setup();
-            const passwordInput = screen.getByLabelText('Password');
-            const passwordConfirmationInput = screen.getByLabelText('Confirm Password');
-            await userEvent.type(passwordInput, 'P4ssword');
-            await userEvent.type(passwordConfirmationInput, 'P4ssword');
-            const signUpBtn = screen.getByRole('button', { name: 'Sign Up' });
-            expect(signUpBtn).toBeEnabled();
-        })
+        let signUpBtn: HTMLButtonElement;
 
-        it('sends username, email and password to backend after clicking Submit button', async () => {
+        const setupForm = async () => {
             await setup();
-            
             const username = screen.getByLabelText('Username');
             const email = screen.getByLabelText('Email');
             const password = screen.getByLabelText('Password');
@@ -100,9 +98,17 @@ describe('SignUpComponent', () => {
             await userEvent.type(email, 'user1@mail.com');
             await userEvent.type(password, 'P4ssword');
             await userEvent.type(passwordConfirmation, 'P4ssword');
+            signUpBtn = screen.getByRole('button', { name: 'Sign Up' });
+        }
 
-            const button = screen.getByRole('button', { name: 'Sign Up' });
-            await userEvent.click(button);
+        it('enables Submit button when password and password confirmation is equal', async () => {
+            await setupForm();
+            expect(signUpBtn).toBeEnabled();
+        })
+
+        it('sends username, email and password to backend after clicking Submit button', async () => {
+            await setupForm();
+            await userEvent.click(signUpBtn);
 
             waitFor(() => {
                 expect(requestBody).toEqual({
@@ -111,6 +117,22 @@ describe('SignUpComponent', () => {
                     password: 'P4ssword'
                 });
             })
+        })
+
+        it('disables the Submit button when API is called', async () => {
+            await setupForm();
+            await userEvent.click(signUpBtn);
+            await userEvent.click(signUpBtn);
+            await waitFor(() => {
+                expect(counter).toBe(1);
+            })
+        })
+
+        it('displays spinner after clicking the Submit button', async () => {
+            await setupForm();
+            expect(screen.queryByRole('status')).not.toBeInTheDocument();
+            await userEvent.click(signUpBtn);
+            expect(screen.queryByRole('status')).toBeInTheDocument();
         })
     })
 })
