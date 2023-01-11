@@ -73,9 +73,11 @@ describe('SignUpComponent', () => {
             const username = screen.getByLabelText('Username');
             const email = screen.getByLabelText('Email');
             const password = screen.getByLabelText('Password');
+            const passwordConfirmation = screen.getByLabelText('Confirm Password');
             await userEvent.type(username, 'user1');
             await userEvent.type(email, 'user1@mail.com');
             await userEvent.type(password, 'P4ssword');
+            await userEvent.type(passwordConfirmation, 'P4ssword');
 
             const button = screen.getByRole('button', { name: 'Sign Up' });
             await userEvent.click(button);

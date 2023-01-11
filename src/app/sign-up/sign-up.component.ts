@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -11,7 +12,7 @@ export class SignUpComponent implements OnInit {
   password = '';
   passwordConfirmation = '';
 
-  constructor() { }
+  constructor(private httpClient: HttpClient) { }
 
   ngOnInit(): void {
   }
@@ -33,18 +34,22 @@ export class SignUpComponent implements OnInit {
   }
 
   onClickSignUp() {
-    console.log('Submit');
-    fetch('/api/1.0/users', {
-      method: 'POST',
-      body: JSON.stringify({
-        username: this.username,
-        email: this.email,
-        password: this.password,
-      }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
+    // fetch('/api/1.0/users', {
+    //   method: 'POST',
+    //   body: JSON.stringify({
+    //     username: this.username,
+    //     email: this.email,
+    //     password: this.password,
+    //   }),
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   }
+    // })
+    this.httpClient.post('/api/1.0/users', {
+      username: this.username,
+      email: this.email,
+      password: this.password
+    }).subscribe(() => {})
   }
 
   isDisabled() {
