@@ -1,13 +1,31 @@
-<h1>Sign Up</h1>
+<div class="col-lg-6 offset-lg-3 col-md-8 offset-md-2">
+    <div class="card">
+        <div class="card-header text-center">
+            <h1>Sign Up</h1>
+        </div>
+        
+        <form class="card-body" (submit)="onClickSignUp(); $event.preventDefault();">
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input id="username" class="form-control" (input)="onChangeUsername($event)"/>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input id="email" class="form-control" (input)="onChangeEmail($event)"/>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input id="password" class="form-control" type="password" (input)="onChangePassword($event)"/>
+            </div>
+            <div class="mb-3">
+                <label for="passwordConfirmation" class="form-label">Confirm Password</label>
+                <input id="passwordConfirmation" class="form-control" type="password" (input)="onChangePasswordConfirmation($event)"/>
+            </div>
+            <div class="text-center">
+                <button class="btn btn-primary" [disabled]="isDisabled()">Sign Up</button>
+            </div>
+        </form>
+    </div>
+</div>
 
-<form (submit)="onClickSignUp(); $event.preventDefault();">
-    <label for="username">Username</label>
-    <input id="username" (input)="onChangeUsername($event)"/>
-    <label for="email">Email</label>
-    <input id="email" (input)="onChangeEmail($event)"/>
-    <label for="password">Password</label>
-    <input id="password" type="password" (input)="onChangePassword($event)"/>
-    <label for="passwordConfirmation">Confirm Password</label>
-    <input id="passwordConfirmation" type="password" (input)="onChangePasswordConfirmation($event)"/>
-    <button [disabled]="isDisabled()">Sign Up</button>
-</form>
+
