@@ -104,6 +104,7 @@ describe('SignUpComponent', () => {
     })
 
     it('sends username, email and password to backend after clicking Submit button', () => {
+      const spy = spyOn(window, 'fetch');
       const signUp = fixture.nativeElement as HTMLElement;
       const usernameInput = signUp.querySelector('input[id="username"]') as HTMLInputElement;
       const emailInput = signUp.querySelector('input[id="email"]') as HTMLInputElement;
@@ -122,10 +123,10 @@ describe('SignUpComponent', () => {
 
       const button = signUp.querySelector('button') as HTMLButtonElement;
       button.click();
-      const spy = spyOn(window, 'fetch');
+      
       const args = spy.calls.allArgs()[0];
-      const secondParam = args[1] as RequestInit;
-      expect(secondParam.body).toEqual(JSON.stringify({
+      const payload = args[1] as RequestInit;
+      expect(payload.body).toEqual(JSON.stringify({
         username: 'user1',
         email: 'user1@mail.com',
         password: 'P4ssword'
