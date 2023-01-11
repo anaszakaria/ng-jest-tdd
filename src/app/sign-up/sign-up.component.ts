@@ -11,6 +11,7 @@ export class SignUpComponent implements OnInit {
   email = '';
   password = '';
   passwordConfirmation = '';
+  apiProgress = false;
 
   constructor(private httpClient: HttpClient) { }
 
@@ -34,6 +35,7 @@ export class SignUpComponent implements OnInit {
   }
 
   onClickSignUp() {
+    this.apiProgress = true;
     this.httpClient.post('/api/1.0/users', {
       username: this.username,
       email: this.email,
