@@ -105,7 +105,7 @@ describe('SignUpComponent', () => {
     })
 
     it('sends username, email and password to backend after clicking Submit button', () => {
-      let httpTestingController = TestBed.inject(HttpTestingController);
+      const httpTestingController = TestBed.inject(HttpTestingController);
       const signUp = fixture.nativeElement as HTMLElement;
       const usernameInput = signUp.querySelector('input[id="username"]') as HTMLInputElement;
       const emailInput = signUp.querySelector('input[id="email"]') as HTMLInputElement;
@@ -130,7 +130,7 @@ describe('SignUpComponent', () => {
         username: 'user1',
         email: 'user1@mail.com',
         password: 'P4ssword'
-      })
+      });
     })
   })
 });
