@@ -6,6 +6,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./sign-up.component.css']
 })
 export class SignUpComponent implements OnInit {
+  username = '';
+  email = '';
   password = '';
   passwordConfirmation = '';
 
@@ -14,12 +16,35 @@ export class SignUpComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  onChangeUsername(event: Event) {
+    this.username = (event.target as HTMLInputElement).value;
+  }
+
+  onChangeEmail(event: Event) {
+    this.email = (event.target as HTMLInputElement).value;
+  }
+
   onChangePassword(event: Event) {
     this.password = (event.target as HTMLInputElement).value;
   }
 
   onChangePasswordConfirmation(event: Event) {
     this.passwordConfirmation = (event.target as HTMLInputElement).value;
+  }
+
+  onClickSignUp() {
+    console.log('Submit');
+    fetch('/api/1.0/users', {
+      method: 'POST',
+      body: JSON.stringify({
+        username: this.username,
+        email: this.email,
+        password: this.password,
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
   }
 
   isDisabled() {
