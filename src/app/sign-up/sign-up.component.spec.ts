@@ -89,7 +89,7 @@ describe('SignUpComponent', () => {
   })
 
   describe('Interactions', () => {
-    let button: HTMLButtonElement;
+    let signUpBtn: HTMLButtonElement;
     let httpTestingController: HttpTestingController;
     let signUp: HTMLElement;
 
@@ -110,17 +110,17 @@ describe('SignUpComponent', () => {
       passwordConfirmationInput.dispatchEvent(new Event('input'));
 
       fixture.detectChanges();
-      button = signUp.querySelector('button') as HTMLButtonElement;
+      signUpBtn = signUp.querySelector('button') as HTMLButtonElement;
     }
 
     it('enables Submit button when password and password confirmation is equal', () => {
       setupForm();
-      expect(button.disabled).toBeFalsy();
+      expect(signUpBtn.disabled).toBeFalsy();
     })
 
     it('sends username, email and password to backend after clicking Submit button', () => {
       setupForm();
-      button.click();
+      signUpBtn.click();
       const req = httpTestingController.expectOne('/api/1.0/users');
       const requestBody = req.request.body;
       expect(requestBody).toEqual({
@@ -132,19 +132,40 @@ describe('SignUpComponent', () => {
 
     it('disables the Submit button when API is called', () => {
       setupForm();
-      button.click();
+      signUpBtn.click();
       fixture.detectChanges();
-      button.click();
+      signUpBtn.click();
       httpTestingController.expectOne('/api/1.0/users');
-      expect(button.disabled).toBeTruthy();
+      expect(signUpBtn.disabled).toBeTruthy();
     })
 
     it('displays spinner after clicking the Submit button', () => {
       setupForm();
       expect(signUp.querySelector('span[role="status"]')).toBeFalsy();
-      button.click();
+      signUpBtn.click();
       fixture.detectChanges();
       expect(signUp.querySelector('span[role="status"]')).toBeTruthy();
+    })
+
+    it('displays account activation notification after successful sign up request', () => {
+      setupForm();
+      expect(signUp.querySelector('.alert-success')).toBeFalsy();
+      signUpBtn.click();
+      const req = httpTestingController.expectOne('/api/1.0/users');
+      req.flush({});
+      fixture.detectChanges();
+      const message = signUp.querySelector('.alert-success');
+      expect(message?.textContent).toContain('Please check your email to activate account');
+    })
+
+    it('hides sign up form after successful request', () => {
+      setupForm();
+      expect(signUp.querySelector('div[data-test="form-sign-up"]')).toBeTruthy();
+      signUpBtn.click();
+      const req = httpTestingController.expectOne('/api/1.0/users');
+      req.flush({});
+      fixture.detectChanges();
+      expect(signUp.querySelector('div[data-test="form-sign-up"]')).toBeFalsy();
     })
   })
 });
