@@ -90,7 +90,7 @@ describe('SignUpComponent', () => {
     describe('Interactions', () => {
         let signUpBtn: HTMLButtonElement;
 
-        const setupForm = async () => {
+        const fillForm = async () => {
             await setup();
             const username = screen.getByLabelText('Username');
             const email = screen.getByLabelText('Email');
@@ -104,12 +104,12 @@ describe('SignUpComponent', () => {
         }
 
         it('enables Submit button when password and password confirmation is equal', async () => {
-            await setupForm();
+            await fillForm();
             expect(signUpBtn).toBeEnabled();
         })
 
         it('sends username, email and password to backend after clicking Submit button', async () => {
-            await setupForm();
+            await fillForm();
             await userEvent.click(signUpBtn);
 
             waitFor(() => {
@@ -122,7 +122,7 @@ describe('SignUpComponent', () => {
         })
 
         it('disables the Submit button when API is called', async () => {
-            await setupForm();
+            await fillForm();
             await userEvent.click(signUpBtn);
             await userEvent.click(signUpBtn);
             await waitFor(() => {
@@ -131,14 +131,14 @@ describe('SignUpComponent', () => {
         })
 
         it('displays spinner after clicking the Submit button', async () => {
-            await setupForm();
+            await fillForm();
             expect(screen.queryByRole('status')).not.toBeInTheDocument();
             await userEvent.click(signUpBtn);
             expect(screen.queryByRole('status')).toBeInTheDocument();
         })
 
         it('displays account activation notification after successful sign up request', async  () => {
-            await setupForm();
+            await fillForm();
             expect(screen.queryByText('Please check your email to activate account')).not.toBeInTheDocument();
             await userEvent.click(signUpBtn);
             const message = await screen.findByText('Please check your email to activate account');
@@ -146,11 +146,33 @@ describe('SignUpComponent', () => {
         })
       
         it('hides sign up form after successful request', async () => {
-            await setupForm();
+            await fillForm();
             const form = screen.getByTestId('form-sign-up');
             await userEvent.click(signUpBtn);
             await screen.findByText('Please check your email to activate account');
             expect(form).not.toBeInTheDocument();
+        })
+    })
+
+    describe('Validation', () => {
+        it('displays Username is required message when username is null', async () => {
+            await setup();
+            const message = 'Username is required';
+            expect(screen.queryByText(message)).not.toBeInTheDocument();
+            const usernameInput = screen.getByLabelText('Username');
+            await userEvent.click(usernameInput);
+            await userEvent.tab();
+            expect(screen.queryByText(message)).toBeInTheDocument();
+        })
+
+        it('displays length error when Username is less than 4 characters', async () => {
+            await setup();
+            const message = 'Username must be at least 4 characters long';
+            expect(screen.queryByText(message)).not.toBeInTheDocument();
+            const usernameInput = screen.getByLabelText('Username');
+            await userEvent.type(usernameInput, '123');
+            await userEvent.tab();
+            expect(screen.queryByText(message)).toBeInTheDocument();
         })
     })
 })
