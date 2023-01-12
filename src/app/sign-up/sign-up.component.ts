@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { UserService } from '../core/user.service';
 
 @Component({
@@ -8,10 +9,13 @@ import { UserService } from '../core/user.service';
   styleUrls: ['./sign-up.component.css']
 })
 export class SignUpComponent implements OnInit {
-  username = '';
-  email = '';
-  password = '';
-  passwordConfirmation = '';
+  signUpForm = new FormGroup({
+    username: new FormControl(''),
+    email: new FormControl(''),
+    password: new FormControl(''),
+    passwordConfirmation: new FormControl('')
+  })
+  
   apiProgress = false;
   signUpSuccess = false;
 
@@ -21,17 +25,15 @@ export class SignUpComponent implements OnInit {
   }
 
   onClickSignUp() {
+    const body = this.signUpForm.value;
+    delete body.passwordConfirmation;
     this.apiProgress = true;
-    this.userService.signUp({
-      username: this.username,
-      email: this.email,
-      password: this.password
-    }).subscribe(() => {
+    this.userService.signUp(body).subscribe(() => {
       this.signUpSuccess = true;
     })
   }
 
   isDisabled() {
-    return this.password ? (this.password !== this.passwordConfirmation) : true
+    return this.signUpForm.get('password')?.value ? (this.signUpForm.get('password')?.value !== this.signUpForm.get('passwordConfirmation')?.value) : true
   }
 }

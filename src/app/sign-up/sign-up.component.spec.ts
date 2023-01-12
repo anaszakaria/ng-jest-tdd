@@ -1,6 +1,6 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { SignUpComponent } from './sign-up.component';
 
@@ -11,7 +11,7 @@ describe('SignUpComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ SignUpComponent ],
-      imports: [HttpClientTestingModule, SharedModule, FormsModule]
+      imports: [HttpClientTestingModule, SharedModule, ReactiveFormsModule]
     })
     .compileComponents();
   });
