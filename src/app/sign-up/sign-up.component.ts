@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../core/user.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { UserService } from '../core/user.service';
 })
 export class SignUpComponent implements OnInit {
   signUpForm = new FormGroup({
-    username: new FormControl(''),
+    username: new FormControl('', [Validators.required, Validators.minLength(4)]),
     email: new FormControl(''),
     password: new FormControl(''),
     passwordConfirmation: new FormControl('')
