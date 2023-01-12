@@ -160,12 +160,12 @@ describe('SignUpComponent', () => {
 
     it('hides sign up form after successful request', () => {
       setupForm();
-      expect(signUp.querySelector('div[data-test="form-sign-up"]')).toBeTruthy();
+      expect(signUp.querySelector('div[data-testid="form-sign-up"]')).toBeTruthy();
       signUpBtn.click();
       const req = httpTestingController.expectOne('/api/1.0/users');
       req.flush({});
       fixture.detectChanges();
-      expect(signUp.querySelector('div[data-test="form-sign-up"]')).toBeFalsy();
+      expect(signUp.querySelector('div[data-testid="form-sign-up"]')).toBeFalsy();
     })
   })
 });

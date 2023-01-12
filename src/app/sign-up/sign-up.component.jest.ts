@@ -134,6 +134,22 @@ describe('SignUpComponent', () => {
             await userEvent.click(signUpBtn);
             expect(screen.queryByRole('status')).toBeInTheDocument();
         })
+
+        it('displays account activation notification after successful sign up request', async  () => {
+            await setupForm();
+            expect(screen.queryByText('Please check your email to activate account')).not.toBeInTheDocument();
+            await userEvent.click(signUpBtn);
+            const message = await screen.findByText('Please check your email to activate account');
+            expect(message).toBeInTheDocument();
+        })
+      
+        it('hides sign up form after successful request', async () => {
+            await setupForm();
+            const form = screen.getByTestId('form-sign-up');
+            await userEvent.click(signUpBtn);
+            await screen.findByText('Please check your email to activate account');
+            expect(form).not.toBeInTheDocument();
+        })
     })
 })
 
