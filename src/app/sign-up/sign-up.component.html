@@ -7,19 +7,41 @@
         <form class="card-body" (submit)="onClickSignUp(); $event.preventDefault();">
             <div class="mb-3">
                 <label for="username" class="form-label">Username</label>
-                <input id="username" class="form-control" (input)="onChangeUsername($event)"/>
+                <input 
+                    id="username" 
+                    class="form-control" 
+                    name="username" 
+                    [(ngModel)]="username"
+                />
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
-                <input id="email" class="form-control" (input)="onChangeEmail($event)"/>
+                <input 
+                    id="email" 
+                    class="form-control" 
+                    name="email" 
+                    [(ngModel)]="email"
+                />
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
-                <input id="password" class="form-control" type="password" (input)="onChangePassword($event)"/>
+                <input 
+                    id="password" 
+                    class="form-control" 
+                    type="password" 
+                    name="password" 
+                    [(ngModel)]="password"
+                />
             </div>
             <div class="mb-3">
                 <label for="passwordConfirmation" class="form-label">Confirm Password</label>
-                <input id="passwordConfirmation" class="form-control" type="password" (input)="onChangePasswordConfirmation($event)"/>
+                <input 
+                    id="passwordConfirmation" 
+                    class="form-control" 
+                    type="password" 
+                    name="passwordConfirmation" 
+                    [(ngModel)]="passwordConfirmation"
+                />
             </div>
             <div class="text-center">
                 <app-button [disabled]="isDisabled()" [apiProgress]="apiProgress">Sign Up</app-button>
