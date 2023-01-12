@@ -22,18 +22,15 @@
                 <input id="passwordConfirmation" class="form-control" type="password" (input)="onChangePasswordConfirmation($event)"/>
             </div>
             <div class="text-center">
-                <button class="btn btn-primary" [disabled]="isDisabled() || apiProgress">
-                    <span *ngIf="apiProgress" class="spinner-border spinner-border-sm" role="status"></span>
-                    Sign Up
-                </button>
+                <app-button [disabled]="isDisabled()" [apiProgress]="apiProgress">Sign Up</app-button>
             </div>
         </form>
     </div>
 </div>
 <ng-template #successMessage>
-    <div class="alert alert-success" >
+    <app-alert>
         Please check your email to activate account
-    </div>
+    </app-alert>
 </ng-template>
 
 
