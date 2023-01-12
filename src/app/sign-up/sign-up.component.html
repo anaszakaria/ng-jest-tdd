@@ -16,13 +16,8 @@
                     class="form-control" 
                     formControlName="username"
                 />
-                <div data-testid="username-validation" *ngIf="(signUpForm.get('username')?.touched || signUpForm.get('username')?.dirty) && signUpForm.get('username')?.errors">
-                    <div *ngIf="signUpForm.get('username')?.errors?.['required']">
-                        Username is required
-                    </div>
-                    <div *ngIf="signUpForm.get('username')?.errors?.['minlength']">
-                        Username must be at least 4 characters long
-                    </div>
+                <div data-testid="username-validation" *ngIf="usernameError">
+                    {{ usernameError }}
                 </div>
             </div>
             <div class="mb-3">
