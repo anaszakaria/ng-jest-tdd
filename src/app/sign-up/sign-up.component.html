@@ -39,7 +39,7 @@
                     id="password" 
                     class="form-control" 
                     type="password" 
-                    [ngClass]="passwordError ? 'is-invalid' : ''" 
+                    [ngClass]="passwordError || passwordConfirmationError ? 'is-invalid' : ''" 
                     formControlName="password"
                 />
                 <div class="invalid-feedback" data-testid="password-validation" *ngIf="passwordError">
@@ -52,8 +52,12 @@
                     id="passwordConfirmation" 
                     class="form-control" 
                     type="password" 
+                    [ngClass]="passwordConfirmationError ? 'is-invalid' : ''" 
                     formControlName="passwordConfirmation"
                 />
+                <div class="invalid-feedback" data-testid="passwordConfirmation-validation" *ngIf="passwordConfirmationError">
+                    {{ passwordConfirmationError }}
+                </div>
             </div>
             <div class="text-center">
                 <app-button [disabled]="isDisabled()" [apiProgress]="apiProgress">Sign Up</app-button>

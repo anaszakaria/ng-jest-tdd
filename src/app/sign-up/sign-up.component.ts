@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../core/user.service';
+import { passwordMatchValidator } from './password-match.validator';
+
 
 @Component({
   selector: 'app-sign-up',
@@ -14,7 +16,7 @@ export class SignUpComponent implements OnInit {
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/)]),
     passwordConfirmation: new FormControl('')
-  })
+  }, { validators: [passwordMatchValidator] })
   
   apiProgress = false;
   signUpSuccess = false;
@@ -55,6 +57,15 @@ export class SignUpComponent implements OnInit {
         return 'Password is required'
       } else if (field.errors['pattern']) {
         return 'Password must have at least 1 uppercase, 1 lowercase and 1 number'
+      }
+    }
+    return;
+  }
+
+  get passwordConfirmationError() {
+    if (this.signUpForm.errors && (this.signUpForm?.touched || this.signUpForm?.dirty)) {
+      if (this.signUpForm.errors['passwordMismatch']) {
+        return 'Password and Confirm Password mismatch'
       }
     }
     return;
