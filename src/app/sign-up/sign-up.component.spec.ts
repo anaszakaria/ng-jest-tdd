@@ -95,7 +95,7 @@ describe('SignUpComponent', () => {
     let httpTestingController: HttpTestingController;
     let signUp: HTMLElement;
 
-    const setupForm = async () => {
+    const fillForm = async () => {
       httpTestingController = TestBed.inject(HttpTestingController);
       signUp = fixture.nativeElement;
       await fixture.whenStable();
@@ -108,6 +108,7 @@ describe('SignUpComponent', () => {
       usernameInput.dispatchEvent(new Event('input'));
       emailInput.value = 'user1@mail.com';
       emailInput.dispatchEvent(new Event('input'));
+      emailInput.dispatchEvent(new Event('blur'));
       passwordInput.value = 'P4ssword';
       passwordInput.dispatchEvent(new Event('input'));
       passwordConfirmationInput.value = 'P4ssword';
@@ -118,12 +119,12 @@ describe('SignUpComponent', () => {
     }
 
     it('enables Submit button when password and password confirmation is equal', async () => {
-      await setupForm();
+      await fillForm();
       expect(signUpBtn.disabled).toBeFalsy();
     })
 
     it('sends username, email and password to backend after clicking Submit button', async () => {
-      await setupForm();
+      await fillForm();
       signUpBtn.click();
       const req = httpTestingController.expectOne('/api/1.0/users');
       const requestBody = req.request.body;
@@ -135,7 +136,7 @@ describe('SignUpComponent', () => {
     })
 
     it('disables the Submit button when API is called', async () => {
-      await setupForm();
+      await fillForm();
       signUpBtn.click();
       fixture.detectChanges();
       signUpBtn.click();
@@ -144,7 +145,7 @@ describe('SignUpComponent', () => {
     })
 
     it('displays spinner after clicking the Submit button', async () => {
-      await setupForm();
+      await fillForm();
       expect(signUp.querySelector('span[role="status"]')).toBeFalsy();
       signUpBtn.click();
       fixture.detectChanges();
@@ -152,7 +153,7 @@ describe('SignUpComponent', () => {
     })
 
     it('displays account activation notification after successful sign up request', async () => {
-      await setupForm();
+      await fillForm();
       expect(signUp.querySelector('.alert-success')).toBeFalsy();
       signUpBtn.click();
       const req = httpTestingController.expectOne('/api/1.0/users');
@@ -163,7 +164,7 @@ describe('SignUpComponent', () => {
     })
 
     it('hides sign up form after successful request', async () => {
-      await setupForm();
+      await fillForm();
       expect(signUp.querySelector('div[data-testid="form-sign-up"]')).toBeTruthy();
       signUpBtn.click();
       const req = httpTestingController.expectOne('/api/1.0/users');
@@ -199,6 +200,26 @@ describe('SignUpComponent', () => {
         const validationElement = signUp.querySelector(`div[data-testid="${field}-validation"]`) as HTMLDivElement;
         expect(validationElement.textContent).toContain(error);
       })
+    })
+
+    it('displays E-mail in use when is not unique', () => {
+      const httpTestingController = TestBed.inject(HttpTestingController);
+      const signUp = fixture.nativeElement as HTMLElement;
+      expect(signUp.querySelector(`div[data-testid="email-validation"]`)).toBeNull();
+      const input = signUp.querySelector(`input[id="email"]`) as HTMLInputElement;
+      input.value = 'non-unique-email@mail.com';
+      input.dispatchEvent(new Event('input'));
+      input.dispatchEvent(new Event('blur'));
+      const request = httpTestingController.expectOne(({ url, method, body }) => {
+        if (url === '/api/1.0/user/email' && method === 'POST') {
+          return body.email === 'non-unique-email@mail.com';
+        }
+        return false;
+      });
+      request.flush({});
+      fixture.detectChanges();
+      const validationElement = signUp.querySelector(`div[data-testid="email-validation"]`) as HTMLDivElement;
+      expect(validationElement.textContent).toContain('Email in use');
     })
   })
 });

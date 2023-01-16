@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../core/user.service';
 import { passwordMatchValidator } from './password-match.validator';
+import { UniqueEmailValidator } from './unique-email.validator';
 
 
 @Component({
@@ -13,7 +14,11 @@ import { passwordMatchValidator } from './password-match.validator';
 export class SignUpComponent implements OnInit {
   signUpForm = new FormGroup({
     username: new FormControl('', [Validators.required, Validators.minLength(4)]),
-    email: new FormControl('', [Validators.required, Validators.email]),
+    email: new FormControl('', {
+      validators: [Validators.required, Validators.email],
+      asyncValidators: [this.uniqueEmailValidator.validate.bind(this.uniqueEmailValidator)],
+      updateOn: 'blur'
+    }),
     password: new FormControl('', [Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/)]),
     passwordConfirmation: new FormControl('')
   }, { validators: [passwordMatchValidator] })
@@ -21,7 +26,7 @@ export class SignUpComponent implements OnInit {
   apiProgress = false;
   signUpSuccess = false;
 
-  constructor(private httpClient: HttpClient, private userService: UserService) { }
+  constructor(private httpClient: HttpClient, private userService: UserService, private uniqueEmailValidator: UniqueEmailValidator) { }
 
   ngOnInit(): void {
   }
@@ -45,6 +50,8 @@ export class SignUpComponent implements OnInit {
         return 'Email is required'
       } else if (field.errors['email']) {
         return 'Invalid email address'
+      } else if (field.errors['uniqueEmail']) {
+        return 'Email in use'
       }
     }
     return;

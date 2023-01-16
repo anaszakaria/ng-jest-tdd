@@ -11,4 +11,8 @@ export class UserService {
   signUp(body: { username: string, email: string, password: string }) {
     return this.httpClient.post('/api/1.0/users', body);
   }
+
+  isEmailTaken(email: string) {
+    return this.httpClient.post('/api/1.0/user/email', { email });
+  }
 }
