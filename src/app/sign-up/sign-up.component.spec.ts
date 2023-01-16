@@ -188,17 +188,17 @@ describe('SignUpComponent', () => {
     ];  
 
     testCases.forEach(({ field, value, error }) => {
-        it(`displays '${error}' when ${field} has '${value}'`, () => {
-          const signUp = fixture.nativeElement as HTMLElement;
-          expect(signUp.querySelector(`div[data-testid="${field}-validation"]`)).toBeNull();
-          const usernameInput = signUp.querySelector(`input[id="${field}"]`) as HTMLInputElement;
-          usernameInput.value = value;
-          usernameInput.dispatchEvent(new Event('input'));
-          usernameInput.dispatchEvent(new Event('blur'));
-          fixture.detectChanges();
-          const validationElement = signUp.querySelector(`div[data-testid="${field}-validation"]`) as HTMLDivElement;
-          expect(validationElement.textContent).toContain(error);
-        })
+      it(`displays '${error}' when ${field} has '${value}'`, () => {
+        const signUp = fixture.nativeElement as HTMLElement;
+        expect(signUp.querySelector(`div[data-testid="${field}-validation"]`)).toBeNull();
+        const input = signUp.querySelector(`input[id="${field}"]`) as HTMLInputElement;
+        input.value = value;
+        input.dispatchEvent(new Event('input'));
+        input.dispatchEvent(new Event('blur'));
+        fixture.detectChanges();
+        const validationElement = signUp.querySelector(`div[data-testid="${field}-validation"]`) as HTMLDivElement;
+        expect(validationElement.textContent).toContain(error);
+      })
     })
   })
 });
