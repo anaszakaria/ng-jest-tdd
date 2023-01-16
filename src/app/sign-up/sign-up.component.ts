@@ -11,8 +11,8 @@ import { UserService } from '../core/user.service';
 export class SignUpComponent implements OnInit {
   signUpForm = new FormGroup({
     username: new FormControl('', [Validators.required, Validators.minLength(4)]),
-    email: new FormControl(''),
-    password: new FormControl(''),
+    email: new FormControl('', [Validators.required]),
+    password: new FormControl('', [Validators.required]),
     passwordConfirmation: new FormControl('')
   })
   
@@ -32,6 +32,26 @@ export class SignUpComponent implements OnInit {
       } else {
         return 'Username must be at least 4 characters long'
       }
+    }
+    return;
+  }
+
+  get emailError() {
+    const field = this.signUpForm.get('email');
+    if (field?.errors && (field?.touched || field?.dirty)) {
+      if (field.errors['required']) {
+        return 'Email is required'
+      } 
+    }
+    return;
+  }
+
+  get passwordError() {
+    const field = this.signUpForm.get('password');
+    if (field?.errors && (field?.touched || field?.dirty)) {
+      if (field.errors['required']) {
+        return 'Password is required'
+      } 
     }
     return;
   }

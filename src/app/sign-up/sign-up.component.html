@@ -26,8 +26,12 @@
                 <input 
                     id="email" 
                     class="form-control" 
+                    [ngClass]="emailError ? 'is-invalid' : ''" 
                     formControlName="email"
                 />
+                <div class="invalid-feedback" data-testid="email-validation" *ngIf="emailError">
+                    {{ emailError }}
+                </div>
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
@@ -35,8 +39,12 @@
                     id="password" 
                     class="form-control" 
                     type="password" 
+                    [ngClass]="passwordError ? 'is-invalid' : ''" 
                     formControlName="password"
                 />
+                <div class="invalid-feedback" data-testid="password-validation" *ngIf="passwordError">
+                    {{ passwordError }}
+                </div>
             </div>
             <div class="mb-3">
                 <label for="passwordConfirmation" class="form-label">Confirm Password</label>
