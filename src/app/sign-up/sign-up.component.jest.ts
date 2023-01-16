@@ -160,8 +160,13 @@ describe('SignUpComponent', () => {
             ${'Username'} | ${'{space}{backspace}'} | ${'Username is required'}
             ${'Username'} | ${'123'}                | ${'Username must be at least 4 characters long'}
             ${'Email'}    | ${'{space}{backspace}'} | ${'Email is required'}
+            ${'Email'}    | ${'wrong-format'}       | ${'Invalid email address'}
             ${'Password'} | ${'{space}{backspace}'} | ${'Password is required'}
-        `('displays $message when $label has the value "$inputValue"', async ({ label, inputValue, message }) => {
+            ${'Password'} | ${'password'}           | ${'Password must have at least 1 uppercase, 1 lowercase and 1 number'}
+            ${'Password'} | ${'passWORD'}           | ${'Password must have at least 1 uppercase, 1 lowercase and 1 number'}
+            ${'Password'} | ${'pass1234'}           | ${'Password must have at least 1 uppercase, 1 lowercase and 1 number'}
+            ${'Password'} | ${'PASS1234'}           | ${'Password must have at least 1 uppercase, 1 lowercase and 1 number'}
+        `('displays "$message" when $label has the value "$inputValue"', async ({ label, inputValue, message }) => {
             await setup();
             expect(screen.queryByText(message)).not.toBeInTheDocument();
             const usernameInput = screen.getByLabelText(label);

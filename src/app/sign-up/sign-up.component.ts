@@ -11,8 +11,8 @@ import { UserService } from '../core/user.service';
 export class SignUpComponent implements OnInit {
   signUpForm = new FormGroup({
     username: new FormControl('', [Validators.required, Validators.minLength(4)]),
-    email: new FormControl('', [Validators.required]),
-    password: new FormControl('', [Validators.required]),
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/)]),
     passwordConfirmation: new FormControl('')
   })
   
@@ -41,7 +41,9 @@ export class SignUpComponent implements OnInit {
     if (field?.errors && (field?.touched || field?.dirty)) {
       if (field.errors['required']) {
         return 'Email is required'
-      } 
+      } else if (field.errors['email']) {
+        return 'Invalid email address'
+      }
     }
     return;
   }
@@ -51,7 +53,9 @@ export class SignUpComponent implements OnInit {
     if (field?.errors && (field?.touched || field?.dirty)) {
       if (field.errors['required']) {
         return 'Password is required'
-      } 
+      } else if (field.errors['pattern']) {
+        return 'Password must have at least 1 uppercase, 1 lowercase and 1 number'
+      }
     }
     return;
   }
