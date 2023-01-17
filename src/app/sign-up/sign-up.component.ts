@@ -1,6 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { finalize } from 'rxjs';
 import { UserService } from '../core/user.service';
 import { passwordMatchValidator } from './password-match.validator';
 import { UniqueEmailValidator } from './unique-email.validator';
@@ -84,14 +85,16 @@ export class SignUpComponent implements OnInit {
     const body = this.signUpForm.value;
     delete body.passwordConfirmation;
     this.apiProgress = true;
-    this.userService.signUp(body).subscribe({
+    this.userService.signUp(body).pipe(
+      finalize(() => this.apiProgress = false)
+    )
+    .subscribe({
       next: () => {
         this.signUpSuccess = true;
       },
       error: (httpError: HttpErrorResponse) => {
         const emailValidationErrorMessage = httpError.error.validationErrors.email;
         this.signUpForm.get('email')?.setErrors({ backend: emailValidationErrorMessage });
-        this.apiProgress = false;
       }
     })
   }

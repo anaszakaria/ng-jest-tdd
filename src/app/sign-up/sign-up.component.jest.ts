@@ -171,6 +171,21 @@ describe('SignUpComponent', () => {
             const errorMessage = await screen.findByText('Email in use');
             expect(errorMessage).toBeInTheDocument();
         })
+
+        it('hides Sign Up button spinner after sign up request fails', async () => {
+            // overrride setupServer request
+            server.use(
+                rest.post('/api/1.0/users', (req, res, ctx) => {
+                    return res(ctx.status(400), ctx.json({
+                        validationErrors: { email: 'Email in use' }
+                    }))
+                })
+            )
+            await fillForm();
+            await userEvent.click(signUpBtn);
+            await screen.findByText('Email in use');
+            expect(screen.queryByRole('status')).not.toBeInTheDocument();
+        })
       
         it('hides sign up form after successful request', async () => {
             await fillForm();
