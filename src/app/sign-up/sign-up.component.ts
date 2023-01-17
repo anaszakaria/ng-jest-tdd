@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../core/user.service';
@@ -52,6 +52,8 @@ export class SignUpComponent implements OnInit {
         return 'Invalid email address'
       } else if (field.errors['uniqueEmail']) {
         return 'Email in use'
+      } else if (field.errors['backend']) {
+        return field.errors['backend'];
       }
     }
     return;
@@ -82,8 +84,14 @@ export class SignUpComponent implements OnInit {
     const body = this.signUpForm.value;
     delete body.passwordConfirmation;
     this.apiProgress = true;
-    this.userService.signUp(body).subscribe(() => {
-      this.signUpSuccess = true;
+    this.userService.signUp(body).subscribe({
+      next: () => {
+        this.signUpSuccess = true;
+      },
+      error: (httpError: HttpErrorResponse) => {
+        const emailValidationErrorMessage = httpError.error.validationErrors.email;
+        this.signUpForm.get('email')?.setErrors({ backend: emailValidationErrorMessage });
+      }
     })
   }
 
