@@ -31,6 +31,7 @@ const server = setupServer(
 
 beforeEach(() => {
     counter = 0;
+    server.resetHandlers(); 
 })
 
 beforeAll(() => {
@@ -154,6 +155,21 @@ describe('SignUpComponent', () => {
             await userEvent.click(signUpBtn);
             const message = await screen.findByText('Please check your email to activate account');
             expect(message).toBeInTheDocument();
+        })
+
+        it('displays validation error coming from backend after submit failure', async () => {
+            // overrride setupServer request
+            server.use(
+                rest.post('/api/1.0/users', (req, res, ctx) => {
+                    return res(ctx.status(400), ctx.json({
+                        validationErrors: { email: 'Email in use' }
+                    }))
+                })
+            )
+            await fillForm();
+            await userEvent.click(signUpBtn);
+            const errorMessage = await screen.findByText('Email in use');
+            expect(errorMessage).toBeInTheDocument();
         })
       
         it('hides sign up form after successful request', async () => {
