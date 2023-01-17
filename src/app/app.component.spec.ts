@@ -8,7 +8,6 @@ import { Router } from '@angular/router';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SharedModule } from './shared/shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
-import { AppModule } from './app.module';
 
 describe('AppComponent', () => {
   let component: AppComponent;
