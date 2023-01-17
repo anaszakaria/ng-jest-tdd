@@ -115,7 +115,7 @@ describe('SignUpComponent', () => {
             signUpBtn = screen.getByRole('button', { name: 'Sign Up' });
         }
 
-        it('enables Submit button when password and password confirmation is equal', async () => {
+        it('enables Submit button when all the fields have valid input', async () => {
             await fillForm();
             expect(signUpBtn).toBeEnabled();
         })

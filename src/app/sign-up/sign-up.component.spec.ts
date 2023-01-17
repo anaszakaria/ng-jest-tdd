@@ -118,7 +118,7 @@ describe('SignUpComponent', () => {
       signUpBtn = signUp.querySelector('button') as HTMLButtonElement;
     }
 
-    it('enables Submit button when password and password confirmation is equal', async () => {
+    it('enables Submit button when all the fields have valid input', async () => {
       await fillForm();
       expect(signUpBtn.disabled).toBeFalsy();
     })
