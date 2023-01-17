@@ -7,6 +7,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { SharedModule } from '../shared/shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
 
+type UniqueEmailCheck = {
+    email: string
+};
+
 let requestBody: any;
 let counter = 0;
 
@@ -15,6 +19,13 @@ const server = setupServer(
         requestBody = req.body;
         counter += 1;
         return res(ctx.status(200), ctx.json({}))
+    }),
+    rest.post('/api/1.0/user/email', (req, res, ctx) => {
+        const body = req.body as UniqueEmailCheck;
+        if (body.email === 'non-unique-email@mail.com') {
+            return res(ctx.status(200), ctx.json({}));
+        }
+        return res(ctx.status(404), ctx.json({}));
     })
 );
 
@@ -156,24 +167,26 @@ describe('SignUpComponent', () => {
 
     describe('Validation', () => {
         it.each`
-            label                  | inputValue              | message
-            ${'Username'}          | ${'{space}{backspace}'} | ${'Username is required'}
-            ${'Username'}          | ${'123'}                | ${'Username must be at least 4 characters long'}
-            ${'Email'}             | ${'{space}{backspace}'} | ${'Email is required'}
-            ${'Email'}             | ${'wrong-format'}       | ${'Invalid email address'}
-            ${'Password'}          | ${'{space}{backspace}'} | ${'Password is required'}
-            ${'Password'}          | ${'password'}           | ${'Password must have at least 1 uppercase, 1 lowercase and 1 number'}
-            ${'Password'}          | ${'passWORD'}           | ${'Password must have at least 1 uppercase, 1 lowercase and 1 number'}
-            ${'Password'}          | ${'pass1234'}           | ${'Password must have at least 1 uppercase, 1 lowercase and 1 number'}
-            ${'Password'}          | ${'PASS1234'}           | ${'Password must have at least 1 uppercase, 1 lowercase and 1 number'}
-            ${'Confirm Password'} | ${'pass'}               | ${'Password and Confirm Password mismatch'}
+            label                  | inputValue                     | message
+            ${'Username'}          | ${'{space}{backspace}'}        | ${'Username is required'}
+            ${'Username'}          | ${'123'}                       | ${'Username must be at least 4 characters long'}
+            ${'Email'}             | ${'{space}{backspace}'}        | ${'Email is required'}
+            ${'Email'}             | ${'wrong-format'}              | ${'Invalid email address'}
+            ${'Password'}          | ${'{space}{backspace}'}        | ${'Password is required'}
+            ${'Password'}          | ${'password'}                  | ${'Password must have at least 1 uppercase, 1 lowercase and 1 number'}
+            ${'Password'}          | ${'passWORD'}                  | ${'Password must have at least 1 uppercase, 1 lowercase and 1 number'}
+            ${'Password'}          | ${'pass1234'}                  | ${'Password must have at least 1 uppercase, 1 lowercase and 1 number'}
+            ${'Password'}          | ${'PASS1234'}                  | ${'Password must have at least 1 uppercase, 1 lowercase and 1 number'}
+            ${'Confirm Password'}  | ${'pass'}                      | ${'Password and Confirm Password mismatch'}
+            ${'Email'}             | ${'non-unique-email@mail.com'} | ${'Email in use'}
         `('displays "$message" when $label has the value "$inputValue"', async ({ label, inputValue, message }) => {
             await setup();
             expect(screen.queryByText(message)).not.toBeInTheDocument();
             const input = screen.getByLabelText(label);
             await userEvent.type(input, inputValue);
             await userEvent.tab();
-            expect(screen.queryByText(message)).toBeInTheDocument();
+            const errorMessage = await screen.findByText(message);
+            expect(errorMessage).toBeInTheDocument();
         })
     })
 })
