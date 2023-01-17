@@ -21,6 +21,8 @@ describe('Routing', () => {
         path         | pageId
         ${'/'}       | ${'home-page'}
         ${'/signup'} | ${'sign-up-page'}
+        ${'/user/1'} | ${'user-page'}
+        ${'/user/2'} | ${'user-page'}
     `('displays $page when path is $path', async ({ path, pageId }) => {
         await setup(path);
         const page = screen.queryByTestId(pageId);
