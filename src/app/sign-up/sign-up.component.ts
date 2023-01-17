@@ -91,6 +91,7 @@ export class SignUpComponent implements OnInit {
       error: (httpError: HttpErrorResponse) => {
         const emailValidationErrorMessage = httpError.error.validationErrors.email;
         this.signUpForm.get('email')?.setErrors({ backend: emailValidationErrorMessage });
+        this.apiProgress = false;
       }
     })
   }
