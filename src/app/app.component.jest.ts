@@ -1,6 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { render, screen, waitFor } from '@testing-library/angular';
+import userEvent from '@testing-library/user-event'
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { routes } from './router/app-router.module';
@@ -26,6 +27,30 @@ describe('Routing', () => {
     `('displays $page when path is $path', async ({ path, pageId }) => {
         await setup(path);
         const page = screen.queryByTestId(pageId);
+        expect(page).toBeInTheDocument();
+    })
+
+    it.each`
+        path         | title
+        ${'/'}       | ${'Home'}
+        ${'/signup'} | ${'Sign Up'}
+        ${'/login'}  | ${'Login'}
+    `('has link with title $title to $path', async ({ path, title }) => {
+        await setup(path);
+        const link = screen.queryByRole('link', { name: title });
+        expect(link).toBeInTheDocument();
+    })
+
+    it.each`
+        initialPath  | clickingTo   | visiblePage
+        ${'/'}       | ${'Sign Up'} | ${'sign-up-page'}
+        ${'/signup'} | ${'Home'}    | ${'home-page'}
+        ${'/'}       | ${'Login'}   | ${'login-page'}
+    `('displays $visiblePage after clicking $clickingTo link', async ({ initialPath, clickingTo, visiblePage }) => {
+        await setup(initialPath);
+        const link = screen.getByRole('link', { name: clickingTo });
+        await userEvent.click(link);
+        const page = await screen.findByTestId(visiblePage);
         expect(page).toBeInTheDocument();
     })
 })
