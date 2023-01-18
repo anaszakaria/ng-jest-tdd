@@ -9,6 +9,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SharedModule } from './shared/shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LoginComponent } from './login/login.component';
+import { ActivateComponent } from './activate/activate.component';
 
 describe('AppComponent', () => {
   let component: AppComponent;
@@ -22,7 +23,8 @@ describe('AppComponent', () => {
         AppComponent, 
         SignUpComponent,
         HomeComponent,
-        LoginComponent
+        LoginComponent, 
+        ActivateComponent
       ],
       imports: [
         RouterTestingModule.withRoutes(routes), 
@@ -48,6 +50,8 @@ describe('AppComponent', () => {
       { path: '/login', pageId: 'login-page' },
       { path: '/user/1', pageId: 'user-page' },
       { path: '/user/2', pageId: 'user-page' },
+      { path: '/activate/123', pageId: 'activation-page' },
+      { path: '/activate/456', pageId: 'activation-page' },
     ];
 
     testCases.forEach(({ path, pageId }) => {
