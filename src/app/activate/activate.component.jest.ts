@@ -65,5 +65,15 @@ describe('Account Activation Page', () => {
     it('displays activation failure message when token is invalid', async () => {
         await setup();
         subscriber.next({ id: '456' });
+        const message = await screen.findByText('Activation failure');
+        expect(message).toBeInTheDocument();
     })
+
+    it('displays spinner during activation API request', async () => {
+        await setup();
+        subscriber.next({ id: '123' });
+        const spinner = await screen.findByRole('status');
+        await screen.findByText('Account is activated');
+        expect(spinner).not.toBeInTheDocument();
+      })
 })
