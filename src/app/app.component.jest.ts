@@ -1,6 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
-import { render, screen, waitFor } from '@testing-library/angular';
+import { render, screen } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event'
 import { ActivateComponent } from './activate/activate.component';
 import { AppComponent } from './app.component';
@@ -10,6 +10,25 @@ import { routes } from './router/app-router.module';
 import { SharedModule } from './shared/shared.module';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { UserComponent } from './user/user.component';
+import { rest } from 'msw';
+import { setupServer } from 'msw/node'
+
+// Error: Error: connect ECONNREFUSED warning will appear if we didn't include the setupServer() configuration
+const server = setupServer(
+    rest.post('api/1.0/users/token/:token', (req, res, ctx) => {
+        return res(ctx.status(200));
+    })
+);
+
+beforeEach(() => {
+    server.resetHandlers(); 
+})
+
+beforeAll(() => {
+    server.listen();
+})
+
+afterAll(() => server.close());
 
 const setup = async (path: string) => {
     const { navigate } = await render(AppComponent, {
