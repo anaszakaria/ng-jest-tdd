@@ -7,7 +7,24 @@
             {{ user.username }}
         </li>
     </ul>
-    <button *ngIf="hasPrevPage" (click)="loadUsers(page.page - 1)" data-testid="prev-button">Previous &lt;</button>
-    <button *ngIf="hasNextPage" (click)="loadUsers(page.page + 1)" data-testid="next-button">Next &gt;</button>
+    <div class="card-footer text-center">
+        <button 
+            class="btn btn-outline-secondary btn-sm float-start"
+            *ngIf="hasPrevPage && !fetchingData" 
+            (click)="loadUsers(page.page - 1)" 
+            data-testid="prev-button"
+        >
+            &lt; Previous 
+        </button>
+        <button 
+            class="btn btn-outline-secondary btn-sm float-end"
+            *ngIf="hasNextPage && !fetchingData" 
+            (click)="loadUsers(page.page + 1)" 
+            data-testid="next-button"
+        >
+            Next &gt;
+        </button>
+        <span *ngIf="fetchingData" class="spinner-border spinner-border-sm" role="status"></span>
+    </div>
 </div>
 

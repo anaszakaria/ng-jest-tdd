@@ -9,6 +9,7 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./user-list.component.css']
 })
 export class UserListComponent implements OnInit {
+  fetchingData = false;
   page: UserPage = {
     content: [],
     page: 0,
@@ -32,8 +33,10 @@ export class UserListComponent implements OnInit {
   }
 
   loadUsers(page: number = 0) {
+    this.fetchingData = true;
     this.userService.loadUsers(page).subscribe(responseBody => {
       this.page = responseBody as UserPage;
+      this.fetchingData = false;
     })
   }
 }

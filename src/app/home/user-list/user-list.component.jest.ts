@@ -68,7 +68,7 @@ describe('User List', () => {
     it('does not displays previous button in first page', async () => {
         await setup();
         await screen.findByText('user1');
-        expect(screen.queryByText('Previous >')).not.toBeInTheDocument();
+        expect(screen.queryByText('< Previous')).not.toBeInTheDocument();
     })
 
     it('displays previous page button in page 2', async () => {
@@ -76,7 +76,7 @@ describe('User List', () => {
         await screen.findByText('user1');
         await userEvent.click(screen.getByText('Next >'));
         await screen.findByText('user4');
-        expect(screen.queryByText('Previous <')).toBeInTheDocument();
+        expect(screen.queryByText('< Previous')).toBeInTheDocument();
     })
 
     it('displays previous page after clicking the previous page button', async () => {
@@ -84,7 +84,7 @@ describe('User List', () => {
         await screen.findByText('user1');
         await userEvent.click(screen.getByText('Next >'));
         await screen.findByText('user4');
-        await userEvent.click(screen.getByText('Previous <'));
+        await userEvent.click(screen.getByText('< Previous'));
         const firstUserInPage1 = await screen.findByText('user1');
         expect(firstUserInPage1).toBeInTheDocument();
     })
