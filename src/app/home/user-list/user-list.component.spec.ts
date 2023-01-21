@@ -71,4 +71,56 @@ describe('UserListComponent', () => {
     const request = httpTestingController.expectOne(() => true);
     expect(request.request.params.get('size')).toBe(3);
   })
+
+  it('displays next page button', () => {
+    const request = httpTestingController.expectOne(() => true);
+    request.flush(getPage(0, 3));
+    fixture.detectChanges();
+    const nextPageButton = fixture.nativeElement.querySelector('button[data-testid="next-button"]');
+    expect(nextPageButton).toBeTruthy();
+  })
+
+  it('request next page after clicking next page button', () => {
+    const request = httpTestingController.expectOne(() => true);
+    request.flush(getPage(0, 3));
+    fixture.detectChanges();
+    const nextPageButton = fixture.nativeElement.querySelector('button[data-testid="next-button"]');
+    nextPageButton.click();
+    const nextRequest = httpTestingController.expectOne(() => true);
+    expect(nextRequest.request.params.get('page')).toBe(1);
+  })
+
+  it('does not display next page at last page', () => {
+    const request = httpTestingController.expectOne(() => true);
+    request.flush(getPage(2, 3));
+    fixture.detectChanges();
+    const nextPageButton = fixture.nativeElement.querySelector('button[data-testid="next-button"]');
+    expect(nextPageButton).toBeFalsy();
+  })
+
+  it('does not displays previous button at first page', () => {
+    const request = httpTestingController.expectOne(() => true);
+    request.flush(getPage(0, 3));
+    fixture.detectChanges();
+    const prevPageButton = fixture.nativeElement.querySelector('button[data-testid="prev-button"]');
+    expect(prevPageButton).toBeFalsy();
+  })
+
+  it('displays previous page button in page 2', () => {
+    const request = httpTestingController.expectOne(() => true);
+    request.flush(getPage(1, 3));
+    fixture.detectChanges();
+    const prevPageButton = fixture.nativeElement.querySelector('button[data-testid="prev-button"]');
+    expect(prevPageButton).toBeTruthy();
+  })
+
+  it('displays previous page after clicking the previous page button', () => {
+    const request = httpTestingController.expectOne(() => true);
+    request.flush(getPage(1, 3));
+    fixture.detectChanges();
+    const prevPageButton = fixture.nativeElement.querySelector('button[data-testid="prev-button"]');
+    prevPageButton.click();
+    const prevRequest = httpTestingController.expectOne(() => true);
+    expect(prevRequest.request.params.get('page')).toBe(0);
+  })
 });

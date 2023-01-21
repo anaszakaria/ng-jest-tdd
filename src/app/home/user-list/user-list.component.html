@@ -7,5 +7,7 @@
             {{ user.username }}
         </li>
     </ul>
+    <button *ngIf="hasPrevPage" (click)="loadUsers(page.page - 1)" data-testid="prev-button">Previous &lt;</button>
+    <button *ngIf="hasNextPage" (click)="loadUsers(page.page + 1)" data-testid="next-button">Next &gt;</button>
 </div>
 
