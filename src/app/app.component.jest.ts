@@ -51,7 +51,7 @@ const setup = async (path: string) => {
             LoginComponent, 
             ActivateComponent,
             UserListComponent,
-            UserListItemComponent
+            UserListItemComponent,
         ],
         imports: [HttpClientModule, SharedModule, ReactiveFormsModule],
         routes: routes
