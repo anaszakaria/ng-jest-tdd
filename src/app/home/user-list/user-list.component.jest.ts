@@ -5,6 +5,8 @@ import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import userEvent from '@testing-library/user-event';
 import { getPage } from './test-helper';
+import { switchMap } from 'rxjs';
+import { UserListItemComponent } from '../user-list-item/user-list-item.component';
 
 
 const server = setupServer(
@@ -29,6 +31,7 @@ afterAll(() => server.close());
 
 const setup = async () => {
     await render(UserListComponent, {
+        declarations: [UserListItemComponent],
         imports: [HttpClientModule]
     })
 }

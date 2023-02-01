@@ -13,6 +13,7 @@ import { UserComponent } from './user/user.component';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node'
 import { UserListComponent } from './home/user-list/user-list.component';
+import { UserListItemComponent } from './home/user-list-item/user-list-item.component';
 
 // Error: Error: connect ECONNREFUSED warning will appear if we didn't include the setupServer() configuration
 const server = setupServer(
@@ -49,7 +50,8 @@ const setup = async (path: string) => {
             UserComponent, 
             LoginComponent, 
             ActivateComponent,
-            UserListComponent
+            UserListComponent,
+            UserListItemComponent
         ],
         imports: [HttpClientModule, SharedModule, ReactiveFormsModule],
         routes: routes
