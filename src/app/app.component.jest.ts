@@ -20,7 +20,7 @@ const server = setupServer(
     rest.post('api/1.0/users/token/:token', (req, res, ctx) => {
         return res(ctx.status(200));
     }),
-    rest.get('api/1.0/users', (req, res, ctx) => { // test will fail if we didn't include the rest.get() context for userlist component APi call
+    rest.get('api/1.0/users', (req, res, ctx) => { // arning will appear if we didn't include the rest.get() context for Userlist component APi call
         return res(ctx.status(200), ctx.json({
             "content": [
                 { "id": 1, "username": "user1", "email": "user1@mail.com" },
@@ -28,6 +28,14 @@ const server = setupServer(
               "page": 0,
               "size": 3,
               "totalPages": 1
+        }))
+    }),
+    rest.get('api/1.0/users/:id', (req, res, ctx) => { // warning will appear if we didn't include the rest.get() context for userListItem component APi call
+        const id = Number(req.params['id']);
+        return res(ctx.status(200), ctx.json({
+            id,
+            username: `user${id}`,
+            email: `user${id}@gmail.com`
         }))
     })
 );

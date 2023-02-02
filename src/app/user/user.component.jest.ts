@@ -3,9 +3,10 @@ import { ActivatedRoute } from '@angular/router';
 import { render, screen, waitFor } from '@testing-library/angular';
 import { Observable, Subscriber } from 'rxjs';
 import { AlertComponent } from '../shared/alert/alert.component';
-import { ActivateComponent } from './activate.component';
+import { UserComponent } from './user.component';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node'
+import { ProfileCardComponent } from './profile-card/profile-card.component';
 
 type RouteParams = {
     id: string;
@@ -15,8 +16,8 @@ let subscriber: Subscriber<RouteParams>;
 
 const setup = async () => {
     const observable = new Observable<RouteParams>(sub => subscriber = sub);
-    await render(ActivateComponent, {
-        declarations: [ AlertComponent ],
+    await render(UserComponent, {
+        declarations: [ AlertComponent, ProfileCardComponent ],
         imports: [HttpClientModule],
         providers: [ { provide: ActivatedRoute, useValue: { params: observable} }]
     });
@@ -25,12 +26,16 @@ const setup = async () => {
 let counter = 0;
 
 const server = setupServer(
-    rest.post('api/1.0/users/token/:token', (req, res, ctx) => {
+    rest.get('api/1.0/users/:id', (req, res, ctx) => {
         counter = counter + 1;
-        if (req.params['token'] === '456') {
-            return res(ctx.status(400), ctx.json({}));
+        if (req.params['id'] === '2') {
+            return res(ctx.status(404), ctx.json({}));
         }
-        return res(ctx.status(200));
+        return res(ctx.status(200), ctx.json({
+            id: 1,
+            user: 'user1',
+            email: 'user1@mail.com'
+        }));
     })
 );
 
@@ -45,34 +50,34 @@ beforeAll(() => {
 
 afterAll(() => server.close());
 
-describe('Account Activation Page', () => {
-    it('sends account activation request', async () => {
+describe('User Page', () => {
+    it('sends request to get user data', async () => {
        await setup();
-       subscriber.next({ id: '123' });
+       subscriber.next({ id: '1' });
        await waitFor(() => {
         expect(counter).toBe(1);
        })
     })
     
-    it('displays activation success message when token is valid', async () => {
+    it('displays user name on page when user is found', async () => {
         await setup();
-        subscriber.next({ id: '123' });
-        const message = await screen.findByText('Account is activated');
-        expect(message).toBeInTheDocument();
+        subscriber.next({ id: '1' });
+        const header = await screen.findByTestId('username');
+        expect(header).toBeInTheDocument();
     })
     
-    it('displays activation failure message when token is invalid', async () => {
+    it('displays error when user not found', async () => {
         await setup();
-        subscriber.next({ id: '456' });
-        const message = await screen.findByText('Activation failure');
+        subscriber.next({ id: '2' });
+        const message = await screen.findByText('User not found');
         expect(message).toBeInTheDocument();
     })
 
-    it('displays spinner during activation API request', async () => {
+    it('displays spinner during user API request', async () => {
         await setup();
-        subscriber.next({ id: '123' });
+        subscriber.next({ id: '1' });
         const spinner = await screen.findByRole('status');
-        await screen.findByText('Account is activated');
+        await screen.findByTestId('username');
         expect(spinner).not.toBeInTheDocument();
-      })
+    })
 })
